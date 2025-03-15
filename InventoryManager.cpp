@@ -6,8 +6,10 @@
 
 #include "Price.h"
 
-InventoryManager::InventoryManager(double unitSize)
-    : originalUnitSize(unitSize), currentUnitSize(unitSize) {}
+InventoryManager::InventoryManager(double unitSize, double stopLossLimit)
+    : originalUnitSize(unitSize),
+      currentUnitSize(unitSize),
+      stopLossLimit(stopLossLimit) {}
 
 void InventoryManager::updateUnitSize(double probabilityIndicator) {
   if (probabilityIndicator <= 0.1) {
@@ -66,4 +68,17 @@ void InventoryManager::sellPosition(Price price, int mode, std::string log) {
 
   currentInventorySize = 0;
   currentInventoryCost = 0;
+}
+
+bool InventoryManager::stopLoss(Price price, int mode) {
+  if (currentInventorySize == 0 || currentInventoryCost == 0) {
+    return false;
+  }
+
+  double loss = (currentInventoryCost - (currentInventorySize * price.price)) /
+                currentInventoryCost * mode;
+  if (loss >= stopLossLimit) {
+    return true;
+  }
+  return false;
 }

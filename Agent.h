@@ -25,8 +25,8 @@ class Agent {
   void adjustThresholds();
 
  public:
-  Agent(int mode, double delta, double unitSize, std::string sellLog,
-        std::string buyLog);
+  Agent(int mode, double delta, double unitSize, double stopLossLimit,
+        std::string sellLog, std::string buyLog);
   void run(Price price);
 };
 

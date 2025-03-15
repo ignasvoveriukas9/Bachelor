@@ -1,6 +1,7 @@
 #include "Agent.h"
 
 #include <cstdio>
+#include <locale>
 
 #include "CoastlineTrader.h"
 #include "EventDetector.h"
@@ -8,13 +9,13 @@
 #include "Price.h"
 #include "ProbabilityIndicator.h"
 
-Agent::Agent(int mode, double delta, double unitSize, std::string sellLog,
-             std::string buyLog)
+Agent::Agent(int mode, double delta, double unitSize, double stopLossLimit,
+             std::string sellLog, std::string buyLog)
     : eventDetector(delta, delta),
       coastlineTrader(mode),
       mode(mode),
       probabilityIndicator(50.0, delta),
-      inventoryManager(unitSize),
+      inventoryManager(unitSize, stopLossLimit),
       deltaOriginal(delta),
       sellLog(sellLog),
       buyLog(buyLog) {}
@@ -57,5 +58,10 @@ void Agent::run(Price price) {
   } else if (action == -1) {
     inventoryManager.sellPosition(price, mode, sellLog);
     adjustThresholds();
+  }
+
+  if (inventoryManager.stopLoss(price, mode)) {
+    printf("stopLoss triggerd");
+    inventoryManager.sellPosition(price, mode, sellLog);
   }
 }
