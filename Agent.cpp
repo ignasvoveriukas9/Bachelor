@@ -60,8 +60,13 @@ void Agent::run(Price price) {
     adjustThresholds();
   }
 
-  if (inventoryManager.stopLoss(price, mode)) {
+  /*if (inventoryManager.stopLoss(price, mode)) {
     printf("stopLoss triggerd");
+    inventoryManager.sellPosition(price, mode, sellLog);
+  }*/
+
+  if (inventoryManager.trailingStop(price, mode)) {
+    printf("trailingStop triggerd\r\n");
     inventoryManager.sellPosition(price, mode, sellLog);
   }
 }

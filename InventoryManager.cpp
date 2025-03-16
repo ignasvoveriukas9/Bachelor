@@ -68,6 +68,7 @@ void InventoryManager::sellPosition(Price price, int mode, std::string log) {
 
   currentInventorySize = 0;
   currentInventoryCost = 0;
+  stopValue = 0;
 }
 
 bool InventoryManager::stopLoss(Price price, int mode) {
@@ -80,5 +81,30 @@ bool InventoryManager::stopLoss(Price price, int mode) {
   if (loss >= stopLossLimit) {
     return true;
   }
+  return false;
+}
+
+bool InventoryManager::trailingStop(Price price, int mode) {
+  // skip if no inventory
+  if (currentInventorySize == 0 || currentInventoryCost == 0) {
+    return false;
+  }
+  // set initial stop value
+  if (stopValue == 0.0) {
+    stopValue =
+        (currentInventorySize * price.price) * (1.0 - (stopLossLimit * mode));
+    return false;
+  }
+  // update stop value if the price moves in profitable direction
+  if (((currentInventorySize * price.price) * (1.0 - (stopLossLimit * mode)) *
+       mode) > (stopValue * mode)) {
+    stopValue =
+        (currentInventorySize * price.price) * (1.0 - (stopLossLimit * mode));
+  }
+  // return true if price hits stopValue
+  if ((currentInventorySize * price.price * mode) <= (stopValue * mode)) {
+    return true;
+  }
+
   return false;
 }

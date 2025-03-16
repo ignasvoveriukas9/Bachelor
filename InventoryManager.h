@@ -5,14 +5,14 @@
 
 #include "Price.h"
 class InventoryManager {
-  // private:
- private:
+ public:
   double originalUnitSize;
   double currentUnitSize;
   // size in originalUnitSize
   double currentInventorySize = 0;
   double currentInventoryCost = 0;
   double stopLossLimit;
+  double stopValue = 0;
 
  public:
   InventoryManager(double unitSize, double stopLossLimit);
@@ -24,6 +24,7 @@ class InventoryManager {
   bool isProfitable(double price, int mode);
   void sellPosition(Price price, int mode, std::string log);
   bool stopLoss(Price price, int mode);
+  bool trailingStop(Price price, int mode);
 };
 
 #endif  // !INVENTORYMANAGER_H
