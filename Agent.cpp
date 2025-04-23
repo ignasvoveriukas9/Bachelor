@@ -1,6 +1,7 @@
 #include "Agent.h"
 
 #include <cstdio>
+#include <fstream>
 #include <locale>
 
 #include "CoastlineTrader.h"
@@ -50,6 +51,15 @@ void Agent::run(Price price) {
       eventDetector.detectProbabilityIndicatorEvent(price.price);
   probabilityIndicator.updateProbabilityIndicator(probabilityIndicatorEvent);
 
+  /*std::fstream fout;
+
+  fout.open("../rez/SOL/3percent/probIndLog.txt",
+            std::ios::out | std::ios::app);
+  fout << price.ticker << "," << price.time << "," << price.price << ","
+       << probabilityIndicator.getProbabilityIndicator() << "\r\n";
+
+  fout.close();*/
+
   if (action == 1) {
     inventoryManager.updateUnitSize(
         probabilityIndicator.getProbabilityIndicator());
@@ -65,8 +75,30 @@ void Agent::run(Price price) {
     inventoryManager.sellPosition(price, mode, sellLog);
   }*/
 
-  if (inventoryManager.trailingStop(price, mode)) {
+  /*if (inventoryManager.trailingStop(price, mode)) {
     printf("trailingStop triggerd\r\n");
     inventoryManager.sellPosition(price, mode, sellLog);
+  }*/
+
+  /*
+  if ((tickCount % 1) == 0) {
+    tickCount = 1;
+    inventoryManager.dynamicPositionReductionLinear(price, mode, 0.15, 0.05,
+                                                    0.1, sellLog);
+  } else {
+    tickCount++;
   }
+  */
+
+  /*if ((tickCount % 1000) == 0) {
+    tickCount = 1;
+    inventoryManager.dynamicPositionReductionExponetial(price, mode, 0.15, 2.5,
+                                                        sellLog, 0.2);
+  } else {
+    tickCount++;
+  }*/
+
+  inventoryManager.dynamicStopLoss(
+      price, mode, probabilityIndicator.getProbabilityIndicator(), 0.05, 0.15,
+      sellLog);
 }

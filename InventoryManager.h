@@ -13,6 +13,7 @@ class InventoryManager {
   double currentInventoryCost = 0;
   double stopLossLimit;
   double stopValue = 0;
+  double unrealizedLoss(Price price, int mode);
 
  public:
   InventoryManager(double unitSize, double stopLossLimit);
@@ -25,6 +26,15 @@ class InventoryManager {
   void sellPosition(Price price, int mode, std::string log);
   bool stopLoss(Price price, int mode);
   bool trailingStop(Price price, int mode);
+  void dynamicPositionReductionLinear(Price price, int mode, double startLoss,
+                                      double step, double reduction,
+                                      std::string log);
+  void dynamicPositionReductionExponetial(Price price, int mode,
+                                          double startLoss, double k,
+                                          std::string log,
+                                          double min_remaining);
+  void dynamicStopLoss(Price price, int mode, double probabilityIndicator,
+                       double minLoss, double maxLoss, std::string log);
 };
 
 #endif  // !INVENTORYMANAGER_H

@@ -15,11 +15,11 @@ int main() {
   DbManager dbManager;
 
   Agent agentSOL3Long = Agent(
-      1, 0.03, 1, 0.1, "../rez/SOL/3percent/byBitSOLUSDTLongSellLogtrs.csv",
+      1, 0.03, 1, 0.1, "../rez/SOL/3percent/byBitSOLUSDTLongSellLogDRAL.csv",
       "../rez/SOL/3percent/byBitSOLUSDTLongBuyLogtrs.csv");
 
   Agent agentSOL3Short = Agent(
-      -1, 0.03, 1, 0.1, "../rez/SOL/3percent/byBitSOLUSDTShortSellLogtrs.csv",
+      -1, 0.03, 1, 0.1, "../rez/SOL/3percent/byBitSOLUSDTShortSellLogDRAL.csv",
       "../rez/SOL/3percent/byBitSOLUSDTShortBuyLogtrs.csv");
 
   std::vector<Price> priceList = dbManager.getPrices(
@@ -27,7 +27,7 @@ int main() {
 
   for (int i = 0; i < priceList.size(); ++i) {
     agentSOL3Long.run(priceList [ i ]);
-    agentSOL3Short.run(priceList [ i ]);
+    // agentSOL3Short.run(priceList [ i ]);
   }
 
   return 0;

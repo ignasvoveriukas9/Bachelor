@@ -22,6 +22,8 @@ class Agent {
   std::string sellLog;
   std::string buyLog;
 
+  int tickCount = 1;
+
   void adjustThresholds();
 
  public:
