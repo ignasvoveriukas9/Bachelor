@@ -9,8 +9,10 @@
 #include "Agent.h"
 #include "DbFiller.h"
 #include "DbManager.h"
+#include "GlobalTrendAnalyzer.h"
 #include "InventoryManager.h"
 #include "Price.h"
+#include "PriceDataProvider.h"
 
 int main() {
   /*DbManager dbManager;
@@ -31,7 +33,7 @@ int main() {
     // agentSOL3Short.run(priceList [ i ]);
   }*/
 
-  ADXCalculator adx = ADXCalculator(14);
+  /*ADXCalculator adx = ADXCalculator(14);
 
   std::vector<PriceData> sampleData = {
       {44.53, 43.98, 44.52}, {44.93, 44.36, 44.65}, {45.39, 44.70, 45.22},
@@ -49,8 +51,44 @@ int main() {
     // adx.addPriceData(data);
     double currentADX = adx.calculateADX(data);
     std::cout << "currentADX: " << currentADX << std::endl;
-  }
+  }*/
   // double currentADX = adx.calculateADX();
   // std::cout << "currentADX: " << currentADX << std::endl;
+  //
+
+  PriceDataProvider dp;
+  GlobalTrendAnalyzer globalTrendAnalyzer;
+
+  Agent agentBTC3Long =
+      Agent(1, 0.03, 1, 0.1, "../rez/BTC/3percent/BTCUSDTLongSellLogDSL.csv",
+            "../rez/BTC/3percent/BTCUSDTLongBuyLogDSL.csv");
+
+  Agent agentETH3Long =
+      Agent(1, 0.03, 1, 0.1, "../rez/ETH/3percent/ETHUSDTLongSellLogDSL.csv",
+            "../rez/ETH/3percent/ETHUSDTLongBuyLogDSL.csv");
+
+  std::vector<Price> priceListBTC =
+      dp.getPrices("../data/BTCUSDT.csv", "BTCUSDT", 1502942400, 1503002340);
+  globalTrendAnalyzer.addPair("BTCUSDT");
+
+  std::vector<Price> priceListETH =
+      dp.getPrices("../data/ETHUSDT.csv", "ETHUSDT", 1502942400, 1503002340);
+  globalTrendAnalyzer.addPair("ETHUSDT");
+
+  double globalFraction = 1.0;
+
+  for (int i = 0; i < priceListBTC.size(); ++i) {
+    globalTrendAnalyzer.addPrice("BTCUSDT", priceListBTC [ i ]);
+    // agentBTC3Long.run(priceListBTC [ i ], globalFraction);
+
+    if (i < priceListETH.size()) {
+      globalTrendAnalyzer.addPrice("ETHUSDT", priceListETH [ i ]);
+      // agentETH3Long.run(priceListETH [ i ], globalFraction);
+    }
+
+    globalFraction = globalTrendAnalyzer.getBuyFraction();
+    std::cout << "Buy fraction: " << globalFraction << std::endl;
+  }
+
   return 0;
 }

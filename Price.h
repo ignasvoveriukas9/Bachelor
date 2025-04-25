@@ -7,6 +7,9 @@ struct Price {
   std::string ticker;
   int64_t time;
   double price;
+  double high;
+  double low;
+  double close;
 };
 
 #endif

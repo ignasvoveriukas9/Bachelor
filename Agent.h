@@ -2,7 +2,9 @@
 #define AGENT_H
 
 #include <string>
+#include <vector>
 
+#include "ADXCalculator.h"
 #include "CoastlineTrader.h"
 #include "EventDetector.h"
 #include "InventoryManager.h"
@@ -15,6 +17,7 @@ class Agent {
   CoastlineTrader coastlineTrader;
   ProbabilityIndicator probabilityIndicator;
   InventoryManager inventoryManager;
+  ADXCalculator adx;
   // 1 for long, -1 for short
   int mode;
   double deltaOriginal;
@@ -29,7 +32,8 @@ class Agent {
  public:
   Agent(int mode, double delta, double unitSize, double stopLossLimit,
         std::string sellLog, std::string buyLog);
-  void run(Price price);
+  // returns current ADX;
+  void run(Price price, double globalFraction);
 };
 
 #endif  // !AGENT_H

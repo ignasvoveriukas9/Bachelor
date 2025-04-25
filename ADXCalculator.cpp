@@ -54,14 +54,14 @@ void ADXCalculator::addPriceData(const PriceData& data) {
 
   previousPrice = data;
 
-  std::cout << "TR: " << currentTrueRange << " +DM1: " << currentPlusDM
-            << " -DM1: " << currentMinusDM;
+  /*std::cout << "TR: " << currentTrueRange << " +DM1: " << currentPlusDM
+            << " -DM1: " << currentMinusDM;*/
 }
 
 double ADXCalculator::calculateDX() {
   if (trueRange.size() < period || plusDMs.size() < period ||
       minusDMs.size() < period) {
-    std::cout << " no data " << std::endl;
+    /*std::cout << " no data " << std::endl;*/
     return 0.0;  // Not enought data
   }
 
@@ -109,8 +109,8 @@ double ADXCalculator::calculateDX() {
     dXs.push_back(dx);
   }
 
-  std::cout << " TR14: " << smoothedTR << " +DM14 " << smoothedPlusDM
-            << " -DM14 " << smoothedMinusDM << " DX " << dx << std::endl;
+  /*std::cout << " TR14: " << smoothedTR << " +DM14 " << smoothedPlusDM
+            << " -DM14 " << smoothedMinusDM << " DX " << dx << std::endl;*/
 
   return dx;
 }

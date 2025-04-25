@@ -17,6 +17,7 @@ Agent::Agent(int mode, double delta, double unitSize, double stopLossLimit,
       mode(mode),
       probabilityIndicator(50.0, delta),
       inventoryManager(unitSize, stopLossLimit),
+      adx(14),
       deltaOriginal(delta),
       sellLog(sellLog),
       buyLog(buyLog) {}
@@ -42,7 +43,7 @@ void Agent::adjustThresholds() {
   }
 }
 
-void Agent::run(Price price) {
+void Agent::run(Price price, double globalFraction) {
   int intrinsicEvent = eventDetector.detectEvent(price.price);
   int action =
       coastlineTrader.run(intrinsicEvent, price.price, inventoryManager);
@@ -63,7 +64,7 @@ void Agent::run(Price price) {
   if (action == 1) {
     inventoryManager.updateUnitSize(
         probabilityIndicator.getProbabilityIndicator());
-    inventoryManager.buyOrder(price, fraction, mode, buyLog);
+    inventoryManager.buyOrder(price, fraction * globalFraction, mode, buyLog);
     adjustThresholds();
   } else if (action == -1) {
     inventoryManager.sellPosition(price, mode, sellLog);
