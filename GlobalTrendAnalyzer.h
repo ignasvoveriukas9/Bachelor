@@ -12,6 +12,7 @@ struct Pair {
   std::vector<PriceData> prices;
   ADXCalculator adxCalculator;
   double currentADX;
+  std::string log;
 };
 
 class GlobalTrendAnalyzer {
@@ -19,7 +20,7 @@ class GlobalTrendAnalyzer {
   std::map<std::string, Pair> pairs;
 
  public:
-  void addPair(std::string ticker);
+  void addPair(std::string ticker, std::string log);
   bool addPrice(std::string ticker, Price price);
   // double getCurrentADX(std::string ticker);
   double getBuyFraction();

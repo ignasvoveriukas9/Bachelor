@@ -23,43 +23,54 @@ void InventoryManager::updateUnitSize(double probabilityIndicator) {
   }
 }
 
-void InventoryManager::buyOrder(Price price, double fraction, int mode,
-                                std::string log) {
-  currentInventorySize += currentUnitSize * fraction;
-  currentInventoryCost += currentUnitSize * fraction * price.price;
+double InventoryManager::buyOrder(Price price, double fraction, int mode,
+                                  std::string log, double cashAvailable) {
+  if (cashAvailable < (currentUnitSize * fraction)) {
+    printf("Not enough cash!!!\r\n");
+    return cashAvailable;
+  }
 
-  printf("buy position of size: %f, for %f, price%f\r\n",
-         currentUnitSize * fraction, currentUnitSize * fraction * price.price,
-         price.price);
+  double buyAmount = (currentUnitSize * fraction) / price.price;
+  currentInventorySize += buyAmount;
+  currentInventoryCost += currentUnitSize * fraction;
+
+  printf(
+      "buy position of size: %f, for %f, price %f, cash left: %f, position "
+      "worth: %f\r\n",
+      buyAmount, currentUnitSize * fraction, price.price,
+      (cashAvailable - (currentUnitSize * fraction)),
+      (currentInventorySize * price.price));
 
   std::fstream fout;
 
   fout.open(log, std::ios::out | std::ios::app);
   fout << price.ticker << "," << price.time << ","
-       << std::to_string(mode * currentUnitSize * fraction) << ","
-       << std::to_string(price.price) << ","
-       << std::to_string(mode * currentUnitSize * fraction * price.price) << ","
+       << std::to_string(mode * buyAmount) << "," << std::to_string(price.price)
+       << "," << std::to_string(mode * currentUnitSize * fraction) << ","
        << std::to_string(currentInventorySize) << ","
        << std::to_string(currentInventoryCost) << ","
        << std::to_string(currentInventorySize * price.price) << "\r\n";
 
   fout.close();
+  return cashAvailable - (currentUnitSize * fraction);
 }
 
 bool InventoryManager::isProfitable(double price, int mode) {
   if ((double)mode * currentInventoryCost <
-      (double)mode * currentInventorySize * originalUnitSize * price) {
+      (double)mode * currentInventorySize * price) {
     return true;
   }
   return false;
 }
 
-void InventoryManager::sellPosition(Price price, int mode, std::string log) {
-  double sellCost = currentInventorySize * originalUnitSize * price.price;
+double InventoryManager::sellPosition(Price price, int mode, std::string log,
+                                      double cashAvailable) {
+  double sellCost = currentInventorySize * price.price;
   double profit = (double)mode * sellCost - (double)mode * currentInventoryCost;
 
-  printf("sell position of size: %f, for %f, for profit %f\r\n",
-         mode * currentInventorySize, sellCost, profit);
+  printf("sell position of size: %f, for %f, for profit %f, cash left: %f\r\n",
+         mode * currentInventorySize, sellCost, profit,
+         cashAvailable + sellCost);
 
   std::fstream fout;
 
@@ -75,6 +86,7 @@ void InventoryManager::sellPosition(Price price, int mode, std::string log) {
   currentInventorySize = 0;
   currentInventoryCost = 0;
   stopValue = 0;
+  return (cashAvailable + sellCost);
 }
 
 double InventoryManager::unrealizedLoss(Price price, int mode) {
@@ -124,11 +136,9 @@ bool InventoryManager::trailingStop(Price price, int mode) {
   return false;
 }
 
-void InventoryManager::dynamicPositionReductionLinear(Price price, int mode,
-                                                      double startLoss,
-                                                      double step,
-                                                      double reduction,
-                                                      std::string log) {
+double InventoryManager::dynamicPositionReductionLinear(
+    Price price, int mode, double startLoss, double step, double reduction,
+    std::string log, double cashAvailable) {
   if (currentInventorySize > 0.0 && currentInventoryCost > 0.0) {
     double loss = unrealizedLoss(price, mode);
 
@@ -143,8 +153,7 @@ void InventoryManager::dynamicPositionReductionLinear(Price price, int mode,
     if (mult >= 1) {
       if ((mult * reduction) >= 1) {
         printf("sell all from loss\r\n");
-        sellPosition(price, mode, log);
-        return;
+        return sellPosition(price, mode, log, cashAvailable);
       }
 
       double sellAmount = ((mult * reduction) * currentInventorySize);
@@ -155,8 +164,11 @@ void InventoryManager::dynamicPositionReductionLinear(Price price, int mode,
 
       printf(
           "sell position of size: %f, for %f, for profit %f, "
-          "mult %d, price%f\r\n",
-          mode * sellAmount, sellCost, profit, mult, price.price);
+          "mult %d, price%f, cash left: %f, position "
+          "worth: %f\r\n",
+          mode * sellAmount, sellCost, profit, mult, price.price,
+          cashAvailable + sellCost,
+          (currentInventorySize - sellAmount) * price.price);
 
       std::fstream fout;
 
@@ -171,22 +183,20 @@ void InventoryManager::dynamicPositionReductionLinear(Price price, int mode,
 
       currentInventorySize -= sellAmount;
       currentInventoryCost -= sellCost;
+      return (cashAvailable + sellCost);
     }
   }
+  return cashAvailable;
 }
 
-void InventoryManager::dynamicPositionReductionExponetial(Price price, int mode,
-                                                          double startLoss,
-                                                          double k,
-                                                          std::string log,
-                                                          double minRemaining) {
+double InventoryManager::dynamicPositionReductionExponetial(
+    Price price, int mode, double startLoss, double k, std::string log,
+    double minRemaining, double cashAvailable) {
   if (unrealizedLoss(price, mode) <= startLoss) {
-    return;
-  } else if (unrealizedLoss(price, mode) >= 1.0 ||
-             (currentInventorySize / originalUnitSize) < 0.2) {
+    return cashAvailable;
+  } else if (unrealizedLoss(price, mode) >= 1.0) {
     printf("sell all from loss\r\n");
-    sellPosition(price, mode, log);
-    return;
+    return sellPosition(price, mode, log, cashAvailable);
   } else {
     double excessLoss = unrealizedLoss(price, mode) - startLoss;
     double sellPct = 1.0 - std::max(exp(-k * excessLoss), minRemaining);
@@ -198,10 +208,12 @@ void InventoryManager::dynamicPositionReductionExponetial(Price price, int mode,
     double profit = (double)mode * sellCost - (double)mode * buyCost;
     printf(
         "sell position of size: %f, for %f, for profit %f, price%f, loss%f, "
-        "excessLoss%f, currentInventorySize%f, currentInventoryCost%f\r\n",
+        "excessLoss%f, currentInventorySize%f, currentInventoryCost%f, cash "
+        "left: %f, position worth: %f\r\n",
         mode * sellAmount, sellCost, profit, price.price,
         unrealizedLoss(price, mode), excessLoss, currentInventorySize,
-        currentInventoryCost);
+        currentInventoryCost, cashAvailable + sellCost,
+        (currentInventorySize - sellAmount) * price.price);
 
     std::fstream fout;
 
@@ -215,17 +227,20 @@ void InventoryManager::dynamicPositionReductionExponetial(Price price, int mode,
 
     currentInventorySize -= sellAmount;
     currentInventoryCost -= sellCost;
+    return (cashAvailable + sellCost);
   }
 }
 
-void InventoryManager::dynamicStopLoss(Price price, int mode,
-                                       double probabilityIndicator,
-                                       double minLoss, double maxLoss,
-                                       std::string log) {
+double InventoryManager::dynamicStopLoss(Price price, int mode,
+                                         double probabilityIndicator,
+                                         double minLoss, double maxLoss,
+                                         std::string log,
+                                         double cashAvailable) {
   // linear interpolation
   if (unrealizedLoss(price, mode) >=
       (minLoss + ((maxLoss - minLoss) * probabilityIndicator))) {
     printf("sell from dynamics stoploss");
-    sellPosition(price, mode, log);
+    return sellPosition(price, mode, log, cashAvailable);
   }
+  return cashAvailable;
 }

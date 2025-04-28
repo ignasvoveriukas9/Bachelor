@@ -1,13 +1,17 @@
 #include "GlobalTrendAnalyzer.h"
 
 #include <algorithm>
+#include <cstdio>
+#include <cwchar>
+#include <fstream>
 #include <iostream>
 #include <ostream>
+#include <string>
 
 #include "ADXCalculator.h"
 
-void GlobalTrendAnalyzer::addPair(std::string ticker) {
-  Pair pair = {{}, ADXCalculator(14), 0.0};
+void GlobalTrendAnalyzer::addPair(std::string ticker, std::string log) {
+  Pair pair = {{}, ADXCalculator(14), 0.0, log};
   pairs [ ticker ] = pair;
 }
 
@@ -37,7 +41,12 @@ bool GlobalTrendAnalyzer::addPrice(std::string ticker, Price price) {
     pair.currentADX = pair.adxCalculator.calculateADX(OHLC15);
     pair.prices.clear();
 
-    std::cout << ticker << " currentADX: " << pair.currentADX;
+    std::fstream fout;
+
+    fout.open(pair.log, std::ios::out | std::ios::app);
+    fout << ticker << "," << price.time << "," << pair.currentADX << "\r\n";
+
+    fout.close();
 
     pairs [ ticker ] = pair;
     return true;

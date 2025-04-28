@@ -43,7 +43,8 @@ void Agent::adjustThresholds() {
   }
 }
 
-void Agent::run(Price price, double globalFraction) {
+double Agent::run(Price price, double globalFraction, double cashAvailable) {
+  double updatedCashAvailable = cashAvailable;
   int intrinsicEvent = eventDetector.detectEvent(price.price);
   int action =
       coastlineTrader.run(intrinsicEvent, price.price, inventoryManager);
@@ -64,42 +65,47 @@ void Agent::run(Price price, double globalFraction) {
   if (action == 1) {
     inventoryManager.updateUnitSize(
         probabilityIndicator.getProbabilityIndicator());
-    inventoryManager.buyOrder(price, fraction * globalFraction, mode, buyLog);
+    updatedCashAvailable = inventoryManager.buyOrder(
+        price, fraction * globalFraction, mode, buyLog, updatedCashAvailable);
     adjustThresholds();
   } else if (action == -1) {
-    inventoryManager.sellPosition(price, mode, sellLog);
+    updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
+                                                         updatedCashAvailable);
     adjustThresholds();
   }
 
-  /*if (inventoryManager.stopLoss(price, mode)) {
+  if (inventoryManager.stopLoss(price, mode)) {
     printf("stopLoss triggerd");
-    inventoryManager.sellPosition(price, mode, sellLog);
-  }*/
+    updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
+                                                         updatedCashAvailable);
+  }
 
   /*if (inventoryManager.trailingStop(price, mode)) {
     printf("trailingStop triggerd\r\n");
-    inventoryManager.sellPosition(price, mode, sellLog);
+    updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
+  updatedCashAvailable);
   }*/
 
-  /*
-  if ((tickCount % 1) == 0) {
+  /*if ((tickCount % 1) == 0) {
     tickCount = 1;
-    inventoryManager.dynamicPositionReductionLinear(price, mode, 0.15, 0.05,
-                                                    0.1, sellLog);
+    updatedCashAvailable = inventoryManager.dynamicPositionReductionLinear(
+        price, mode, 0.15, 0.05, 0.1, sellLog, updatedCashAvailable);
   } else {
     tickCount++;
-  }
-  */
+  }*/
 
   /*if ((tickCount % 1000) == 0) {
     tickCount = 1;
-    inventoryManager.dynamicPositionReductionExponetial(price, mode, 0.15, 2.5,
-                                                        sellLog, 0.2);
-  } else {
-    tickCount++;
+    updatedCashAvailable =
+  inventoryManager.dynamicPositionReductionExponetial(price, mode, 0.15, 2.5,
+                                                        sellLog, 0.2,
+  updatedCashAvailable); } else { tickCount++;
   }*/
 
-  inventoryManager.dynamicStopLoss(
+  /*
+  updatedCashAvailable = inventoryManager.dynamicStopLoss(
       price, mode, probabilityIndicator.getProbabilityIndicator(), 0.05, 0.15,
-      sellLog);
+      sellLog, updatedCashAvailable);*/
+
+  return updatedCashAvailable;
 }

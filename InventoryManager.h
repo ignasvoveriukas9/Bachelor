@@ -21,20 +21,28 @@ class InventoryManager {
   double getInventorySize() { return currentInventorySize; }
   double getInventoryCost() { return currentInventoryCost; }
   void updateUnitSize(double probabilityIndicator);
-  void buyOrder(Price price, double fraction, int mode, std::string log);
+  // returns updated cashAvailable
+  double buyOrder(Price price, double fraction, int mode, std::string log,
+                  double cashAvailable);
   bool isProfitable(double price, int mode);
-  void sellPosition(Price price, int mode, std::string log);
+  // returns updated cashAvailable
+  double sellPosition(Price price, int mode, std::string log,
+                      double cashAvailable);
   bool stopLoss(Price price, int mode);
   bool trailingStop(Price price, int mode);
-  void dynamicPositionReductionLinear(Price price, int mode, double startLoss,
-                                      double step, double reduction,
-                                      std::string log);
-  void dynamicPositionReductionExponetial(Price price, int mode,
-                                          double startLoss, double k,
-                                          std::string log,
-                                          double min_remaining);
-  void dynamicStopLoss(Price price, int mode, double probabilityIndicator,
-                       double minLoss, double maxLoss, std::string log);
+  // returns updated cashAvailable
+  double dynamicPositionReductionLinear(Price price, int mode, double startLoss,
+                                        double step, double reduction,
+                                        std::string log, double cashAvailable);
+  // returns updated cashAvailable
+  double dynamicPositionReductionExponetial(Price price, int mode,
+                                            double startLoss, double k,
+                                            std::string log,
+                                            double min_remaining,
+                                            double cashAvailable);
+  double dynamicStopLoss(Price price, int mode, double probabilityIndicator,
+                         double minLoss, double maxLoss, std::string log,
+                         double cashAvailable);
 };
 
 #endif  // !INVENTORYMANAGER_H

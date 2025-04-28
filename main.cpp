@@ -60,34 +60,50 @@ int main() {
   GlobalTrendAnalyzer globalTrendAnalyzer;
 
   Agent agentBTC3Long =
-      Agent(1, 0.03, 1, 0.1, "../rez/BTC/3percent/BTCUSDTLongSellLogDSL.csv",
+      Agent(1, 0.03, 10, 0.15, "../rez/BTC/3percent/BTCUSDTLongSellLogDSL.csv",
             "../rez/BTC/3percent/BTCUSDTLongBuyLogDSL.csv");
+  Agent agentBTC3Short = Agent(-1, 0.03, 10, 0.15,
+                               "../rez/BTC/3percent/BTCUSDTShortSellLogDSL.csv",
+                               "../rez/BTC/3percent/BTCUSDTShortBuyLogDSL.csv");
 
   Agent agentETH3Long =
-      Agent(1, 0.03, 1, 0.1, "../rez/ETH/3percent/ETHUSDTLongSellLogDSL.csv",
+      Agent(1, 0.03, 10, 0.15, "../rez/ETH/3percent/ETHUSDTLongSellLogDSL.csv",
             "../rez/ETH/3percent/ETHUSDTLongBuyLogDSL.csv");
+  Agent agentETH3Short = Agent(-1, 0.03, 10, 0.15,
+                               "../rez/ETH/3percent/ETHUSDTShortSellLogDSL.csv",
+                               "../rez/ETH/3percent/ETHUSDTShortBuyLogDSL.csv");
 
   std::vector<Price> priceListBTC =
-      dp.getPrices("../data/BTCUSDT.csv", "BTCUSDT", 1502942400, 1503002340);
-  globalTrendAnalyzer.addPair("BTCUSDT");
+      dp.getPrices("../data/BTCUSDT.csv", "BTCUSDT", 1502942400, 1545320280);
+  globalTrendAnalyzer.addPair("BTCUSDT",
+                              "../rez/BTC/3percent/BTCUSDTADXLog.csv");
+  double BTCCashAvailable = 1000.0;
 
   std::vector<Price> priceListETH =
-      dp.getPrices("../data/ETHUSDT.csv", "ETHUSDT", 1502942400, 1503002340);
-  globalTrendAnalyzer.addPair("ETHUSDT");
+      dp.getPrices("../data/ETHUSDT.csv", "ETHUSDT", 1502942400, 1545320280);
+  globalTrendAnalyzer.addPair("ETHUSDT",
+                              "../rez/ETH/3percent/ETHUSDTADXLog.csv");
+  double ETHCashAvailable = 1000.0;
 
   double globalFraction = 1.0;
 
   for (int i = 0; i < priceListBTC.size(); ++i) {
     globalTrendAnalyzer.addPrice("BTCUSDT", priceListBTC [ i ]);
-    // agentBTC3Long.run(priceListBTC [ i ], globalFraction);
+    BTCCashAvailable =
+        agentBTC3Long.run(priceListBTC [ i ], globalFraction, BTCCashAvailable);
+    BTCCashAvailable = agentBTC3Short.run(priceListBTC [ i ], globalFraction,
+                                          BTCCashAvailable);
 
     if (i < priceListETH.size()) {
       globalTrendAnalyzer.addPrice("ETHUSDT", priceListETH [ i ]);
-      // agentETH3Long.run(priceListETH [ i ], globalFraction);
+      ETHCashAvailable = agentETH3Long.run(priceListETH [ i ], globalFraction,
+                                           ETHCashAvailable);
+      ETHCashAvailable = agentETH3Short.run(priceListETH [ i ], globalFraction,
+                                            ETHCashAvailable);
     }
 
     globalFraction = globalTrendAnalyzer.getBuyFraction();
-    std::cout << "Buy fraction: " << globalFraction << std::endl;
+    // std::cout << "Buy fraction: " << globalFraction << std::endl;
   }
 
   return 0;

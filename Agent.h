@@ -32,8 +32,8 @@ class Agent {
  public:
   Agent(int mode, double delta, double unitSize, double stopLossLimit,
         std::string sellLog, std::string buyLog);
-  // returns current ADX;
-  void run(Price price, double globalFraction);
+  // returns updated cash available;
+  double run(Price price, double globalFraction, double cashAvailable);
 };
 
 #endif  // !AGENT_H
