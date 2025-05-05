@@ -20,6 +20,7 @@ class InventoryManager {
   double getUnitSize() { return currentUnitSize; }
   double getInventorySize() { return currentInventorySize; }
   double getInventoryCost() { return currentInventoryCost; }
+  double getOriginalUnitSize() { return originalUnitSize; }
   void updateUnitSize(double probabilityIndicator);
   // returns updated cashAvailable
   double buyOrder(Price price, double fraction, int mode, std::string log,
@@ -37,8 +38,7 @@ class InventoryManager {
   // returns updated cashAvailable
   double dynamicPositionReductionExponetial(Price price, int mode,
                                             double startLoss, double k,
-                                            std::string log,
-                                            double min_remaining,
+                                            std::string log, double cutoff,
                                             double cashAvailable);
   double dynamicStopLoss(Price price, int mode, double probabilityIndicator,
                          double minLoss, double maxLoss, std::string log,

@@ -23,7 +23,10 @@ Agent::Agent(int mode, double delta, double unitSize, double stopLossLimit,
       buyLog(buyLog) {}
 
 void Agent::adjustThresholds() {
-  double inventorySize = inventoryManager.getInventorySize() * (double)mode;
+  // double inventorySize = inventoryManager.getInventorySize() * (double)mode;
+  double inventoryCost = inventoryManager.getInventoryCost() * (double)mode;
+
+  double inventorySize = inventoryCost / inventoryManager.getOriginalUnitSize();
 
   if (inventorySize >= 15.0 && inventorySize < 30.0) {
     eventDetector.updateDelta(0.75 * deltaOriginal, 1.5 * deltaOriginal);
@@ -41,6 +44,10 @@ void Agent::adjustThresholds() {
     eventDetector.updateDelta(deltaOriginal, deltaOriginal);
     fraction = 1.0;
   }
+}
+
+double Agent::getInventoryValue(Price price) {
+  return inventoryManager.getInventorySize() * price.price * mode;
 }
 
 double Agent::run(Price price, double globalFraction, double cashAvailable) {
@@ -74,11 +81,11 @@ double Agent::run(Price price, double globalFraction, double cashAvailable) {
     adjustThresholds();
   }
 
-  if (inventoryManager.stopLoss(price, mode)) {
+  /*if (inventoryManager.stopLoss(price, mode)) {
     printf("stopLoss triggerd");
     updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
                                                          updatedCashAvailable);
-  }
+  }*/
 
   /*if (inventoryManager.trailingStop(price, mode)) {
     printf("trailingStop triggerd\r\n");
@@ -98,7 +105,7 @@ double Agent::run(Price price, double globalFraction, double cashAvailable) {
     tickCount = 1;
     updatedCashAvailable =
   inventoryManager.dynamicPositionReductionExponetial(price, mode, 0.15, 2.5,
-                                                        sellLog, 0.2,
+                                                        sellLog, 0.95,
   updatedCashAvailable); } else { tickCount++;
   }*/
 

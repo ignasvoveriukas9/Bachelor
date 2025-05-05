@@ -34,6 +34,7 @@ class Agent {
         std::string sellLog, std::string buyLog);
   // returns updated cash available;
   double run(Price price, double globalFraction, double cashAvailable);
+  double getInventoryValue(Price price);
 };
 
 #endif  // !AGENT_H
