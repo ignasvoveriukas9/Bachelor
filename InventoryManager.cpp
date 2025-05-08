@@ -241,7 +241,7 @@ double InventoryManager::dynamicStopLoss(Price price, int mode,
   // linear interpolation
   if (unrealizedLoss(price, mode) >=
       (minLoss + ((maxLoss - minLoss) * probabilityIndicator))) {
-    printf("sell from dynamics stoploss");
+    // printf("sell from dynamics stoploss");
     return sellPosition(price, mode, log, cashAvailable);
   }
   return cashAvailable;

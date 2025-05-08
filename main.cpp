@@ -62,110 +62,114 @@ int main() {
   PriceDataProvider dp;
   GlobalTrendAnalyzer globalTrendAnalyzer;
 
-  Agent agentBTCLong = Agent(1, 0.02, 10, 0.15,
-                             "../rez/BTC/Original/2perc/BTCUSDTLongSellLog.csv",
-                             "../rez/BTC/Original/2perc/BTCUSDTLongBuyLog.csv");
+  std::string testCase = "DynamicStop/1point5perc/20-25Loss";
+  double delta = 0.015;
+
+  Agent agentBTCLong = Agent(
+      1, delta, 10, 0.3, "../rez/BTC/" + testCase + "/BTCUSDTLongSellLog.csv",
+      "../rez/BTC/" + testCase + "/BTCUSDTLongBuyLog.csv");
   Agent agentBTCShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/BTC/Original/2perc/BTCUSDTShortSellLog.csv",
-      "../rez/BTC/Original/2perc/BTCUSDTShortBuyLog.csv");
+      -1, delta, 10, 0.3, "../rez/BTC/" + testCase + "/BTCUSDTShortSellLog.csv",
+      "../rez/BTC/" + testCase + "/BTCUSDTShortBuyLog.csv");
   std::vector<Price> priceListBTC =
       dp.getPrices("../data/BTCUSDT.csv", "BTCUSDT", 1600756200, 1746218400);
   globalTrendAnalyzer.addPair("BTCUSDT",
-                              "../rez/BTC/Original/2perc/BTCUSDTADXLog.csv");
+                              "../rez/BTC/" + testCase + "/BTCUSDTADXLog.csv");
   double BTCCashAvailable = 0.0;
-  std::string BTCValueLog = "../rez/BTC/Original/2perc/BTCValueLog.csv";
+  std::string BTCValueLog = "../rez/BTC/" + testCase + "/BTCValueLog.csv";
 
-  Agent agentETHLong = Agent(1, 0.02, 10, 0.15,
-                             "../rez/ETH/Original/2perc/ETHUSDTLongSellLog.csv",
-                             "../rez/ETH/Original/2perc/ETHUSDTLongBuyLog.csv");
-  Agent agentETHShort =
-      Agent(-1, 0.02, 10, 0.15,
-            "../rez/ETH/Original/2perc/ETHUSDTShortSellLogDSL.csv",
-            "../rez/ETH/Original/2perc/ETHUSDTShortBuyLogDSL.csv");
+  Agent agentETHLong = Agent(
+      1, delta, 10, 0.3, "../rez/ETH/" + testCase + "/ETHUSDTLongSellLog.csv",
+      "../rez/ETH/" + testCase + "/ETHUSDTLongBuyLog.csv");
+  Agent agentETHShort = Agent(
+      -1, delta, 10, 0.3, "../rez/ETH/" + testCase + "/ETHUSDTShortSellLog.csv",
+      "../rez/ETH/" + testCase + "/ETHUSDTShortBuyLog.csv");
   std::vector<Price> priceListETH =
       dp.getPrices("../data/ETHUSDT.csv", "ETHUSDT", 1600756200, 1746218400);
   globalTrendAnalyzer.addPair("ETHUSDT",
-                              "../rez/ETH/Original/2perc/ETHUSDTADXLog.csv");
+                              "../rez/ETH/" + testCase + "/ETHUSDTADXLog.csv");
   double ETHCashAvailable = 0.0;
-  std::string ETHValueLog = "../rez/ETH/Original/2perc/ETHValueLog.csv";
+  std::string ETHValueLog = "../rez/ETH/" + testCase + "/ETHValueLog.csv";
 
-  Agent agentSOLLong = Agent(1, 0.02, 10, 0.15,
-                             "../rez/SOL/Original/2perc/SOLUSDTLongSellLog.csv",
-                             "../rez/SOL/Original/2perc/SOLUSDTLongBuyLog.csv");
+  Agent agentSOLLong = Agent(
+      1, delta, 10, 0.3, "../rez/SOL/" + testCase + "/SOLUSDTLongSellLog.csv",
+      "../rez/SOL/" + testCase + "/SOLUSDTLongBuyLog.csv");
   Agent agentSOLShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/SOL/Original/2perc/SOLUSDTShortSellLog.csv",
-      "../rez/SOL/Original/2perc/SOLUSDTShortBuyLog.csv");
+      -1, delta, 10, 0.3, "../rez/SOL/" + testCase + "/SOLUSDTShortSellLog.csv",
+      "../rez/SOL/" + testCase + "/SOLUSDTShortBuyLog.csv");
   std::vector<Price> priceListSOL =
       dp.getPrices("../data/SOLUSDT.csv", "SOLUSDT", 1600756200, 1746218400);
   globalTrendAnalyzer.addPair("SOLUSDT",
-                              "../rez/SOL/Original/2perc/SOLUSDTADXLog.csv");
+                              "../rez/SOL/" + testCase + "/SOLUSDTADXLog.csv");
   double SOLCashAvailable = 0.0;
-  std::string SOLValueLog = "../rez/SOL/Original/2perc/SOLValueLog.csv";
+  std::string SOLValueLog = "../rez/SOL/" + testCase + "/SOLValueLog.csv";
 
-  Agent agentXRPLong = Agent(1, 0.02, 10, 0.15,
-                             "../rez/XRP/Original/2perc/XRPUSDTLongSellLog.csv",
-                             "../rez/XRP/Original/2perc/XRPUSDTLongBuyLog.csv");
+  Agent agentXRPLong = Agent(
+      1, delta, 10, 0.3, "../rez/XRP/" + testCase + "/XRPUSDTLongSellLog.csv",
+      "../rez/XRP/" + testCase + "/XRPUSDTLongBuyLog.csv");
   Agent agentXRPShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/XRP/Original/2perc/XRPUSDTShortSellLog.csv",
-      "../rez/XRP/Original/2perc/XRPUSDTShortBuyLog.csv");
+      -1, delta, 10, 0.3, "../rez/XRP/" + testCase + "/XRPUSDTShortSellLog.csv",
+      "../rez/XRP/" + testCase + "/XRPUSDTShortBuyLog.csv");
   std::vector<Price> priceListXRP =
       dp.getPrices("../data/XRPUSDT.csv", "XRPUSDT", 1600756200, 1746218400);
   globalTrendAnalyzer.addPair("XRPUSDT",
-                              "../rez/XRP/Original/2perc/XRPUSDTADXLog.csv");
+                              "../rez/XRP/" + testCase + "/XRPUSDTADXLog.csv");
   double XRPCashAvailable = 0.0;
-  std::string XRPValueLog = "../rez/XRP/Original/2perc/XRPValueLog.csv";
+  std::string XRPValueLog = "../rez/XRP/" + testCase + "/XRPValueLog.csv";
 
-  Agent agentADALong = Agent(1, 0.02, 10, 0.15,
-                             "../rez/ADA/Original/2perc/ADAUSDTLongSellLog.csv",
-                             "../rez/ADA/Original/2perc/ADAUSDTLongBuyLog.csv");
+  Agent agentADALong = Agent(
+      1, delta, 10, 0.3, "../rez/ADA/" + testCase + "/ADAUSDTLongSellLog.csv",
+      "../rez/ADA/" + testCase + "/ADAUSDTLongBuyLog.csv");
   Agent agentADAShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/ADA/Original/2perc/ADAUSDTShortSellLog.csv",
-      "../rez/ADA/Original/2perc/ADAUSDTShortBuyLog.csv");
+      -1, delta, 10, 0.3, "../rez/ADA/" + testCase + "/ADAUSDTShortSellLog.csv",
+      "../rez/ADA/" + testCase + "/ADAUSDTShortBuyLog.csv");
   std::vector<Price> priceListADA =
       dp.getPrices("../data/ADAUSDT.csv", "ADAUSDT", 1600756200, 1746218400);
   globalTrendAnalyzer.addPair("ADAUSDT",
-                              "../rez/ADA/Original/2perc/ADAUSDTADXLog.csv");
+                              "../rez/ADA/" + testCase + "/ADAUSDTADXLog.csv");
   double ADACashAvailable = 0.0;
-  std::string ADAValueLog = "../rez/ADA/Original/2perc/ADAValueLog.csv";
+  std::string ADAValueLog = "../rez/ADA/" + testCase + "/ADAValueLog.csv";
 
-  Agent agentBNBLong = Agent(1, 0.02, 10, 0.15,
-                             "../rez/BNB/Original/2perc/BNBUSDTLongSellLog.csv",
-                             "../rez/BNB/Original/2perc/BNBUSDTLongBuyLog.csv");
+  Agent agentBNBLong = Agent(
+      1, delta, 10, 0.3, "../rez/BNB/" + testCase + "/BNBUSDTLongSellLog.csv",
+      "../rez/BNB/" + testCase + "/BNBUSDTLongBuyLog.csv");
   Agent agentBNBShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/BNB/Original/2perc/BNBUSDTShortSellLog.csv",
-      "../rez/BNB/Original/2perc/BNBUSDTShortBuyLog.csv");
+      -1, delta, 10, 0.3, "../rez/BNB/" + testCase + "/BNBUSDTShortSellLog.csv",
+      "../rez/BNB/" + testCase + "/BNBUSDTShortBuyLog.csv");
   std::vector<Price> priceListBNB =
       dp.getPrices("../data/BNBUSDT.csv", "BNBUSDT", 1600756200, 1746218400);
   globalTrendAnalyzer.addPair("BNBUSDT",
-                              "../rez/BNB/Original/2perc/BNBUSDTADXLog.csv");
+                              "../rez/BNB/" + testCase + "/BNBUSDTADXLog.csv");
   double BNBCashAvailable = 0.0;
-  std::string BNBValueLog = "../rez/BNB/Original/2perc/BNBValueLog.csv";
+  std::string BNBValueLog = "../rez/BNB/" + testCase + "/BNBValueLog.csv";
 
   Agent agentDOGELong = Agent(
-      1, 0.02, 10, 0.15, "../rez/DOGE/Original/2perc/DOGEUSDTLongSellLog.csv",
-      "../rez/DOGE/Original/2perc/DOGEUSDTLongBuyLog.csv");
-  Agent agentDOGEShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/DOGE/Original/2perc/DOGEUSDTShortSellLog.csv",
-      "../rez/DOGE/Original/2perc/DOGEUSDTShortBuyLog.csv");
+      1, delta, 10, 0.3, "../rez/DOGE/" + testCase + "/DOGEUSDTLongSellLog.csv",
+      "../rez/DOGE/" + testCase + "/DOGEUSDTLongBuyLog.csv");
+  Agent agentDOGEShort =
+      Agent(-1, delta, 10, 0.3,
+            "../rez/DOGE/" + testCase + "/DOGEUSDTShortSellLog.csv",
+            "../rez/DOGE/" + testCase + "/DOGEUSDTShortBuyLog.csv");
   std::vector<Price> priceListDOGE =
       dp.getPrices("../data/DOGEUSDT.csv", "DOGEUSDT", 1600756200, 1746218400);
-  globalTrendAnalyzer.addPair("DOGEUSDT",
-                              "../rez/DOGE/Original/2perc/DOGEUSDTADXLog.csv");
+  globalTrendAnalyzer.addPair(
+      "DOGEUSDT", "../rez/DOGE/" + testCase + "/DOGEUSDTADXLog.csv");
   double DOGECashAvailable = 0.0;
-  std::string DOGEValueLog = "../rez/DOGE/Original/2perc/DOGEValueLog.csv";
+  std::string DOGEValueLog = "../rez/DOGE/" + testCase + "/DOGEValueLog.csv";
 
   Agent agentAVAXLong = Agent(
-      1, 0.02, 10, 0.15, "../rez/AVAX/Original/2perc/AVAXUSDTLongSellLog.csv",
-      "../rez/AVAX/Original/2perc/AVAXUSDTLongBuyLog.csv");
-  Agent agentAVAXShort = Agent(
-      -1, 0.02, 10, 0.15, "../rez/AVAX/Original/2perc/AVAXUSDTShortSellLog.csv",
-      "../rez/AVAX/Original/2perc/AVAXUSDTShortBuyLog.csv");
+      1, delta, 10, 0.3, "../rez/AVAX/" + testCase + "/AVAXUSDTLongSellLog.csv",
+      "../rez/AVAX/" + testCase + "/AVAXUSDTLongBuyLog.csv");
+  Agent agentAVAXShort =
+      Agent(-1, delta, 10, 0.3,
+            "../rez/AVAX/" + testCase + "/AVAXUSDTShortSellLog.csv",
+            "../rez/AVAX/" + testCase + "/AVAXUSDTShortBuyLog.csv");
   std::vector<Price> priceListAVAX =
       dp.getPrices("../data/AVAXUSDT.csv", "AVAXUSDT", 1600756200, 1746218400);
-  globalTrendAnalyzer.addPair("AVAXUSDT",
-                              "../rez/AVAX/Original/2perc/AVAXUSDTADXLog.csv");
+  globalTrendAnalyzer.addPair(
+      "AVAXUSDT", "../rez/AVAX/" + testCase + "/AVAXUSDTADXLog.csv");
   double AVAXCashAvailable = 0.0;
-  std::string AVAXValueLog = "../rez/AVAX/Original/2perc/AVAXValueLog.csv";
+  std::string AVAXValueLog = "../rez/AVAX/" + testCase + "/AVAXValueLog.csv";
 
   double globalFraction = 1.0;
 

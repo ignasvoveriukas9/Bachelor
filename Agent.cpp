@@ -82,15 +82,15 @@ double Agent::run(Price price, double globalFraction, double cashAvailable) {
   }
 
   /*if (inventoryManager.stopLoss(price, mode)) {
-    printf("stopLoss triggerd");
+    // printf("stopLoss triggerd");
     updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
                                                          updatedCashAvailable);
   }*/
 
   /*if (inventoryManager.trailingStop(price, mode)) {
-    printf("trailingStop triggerd\r\n");
+    // printf("trailingStop triggerd\r\n");
     updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
-  updatedCashAvailable);
+                                                         updatedCashAvailable);
   }*/
 
   /*if ((tickCount % 1) == 0) {
@@ -109,10 +109,9 @@ double Agent::run(Price price, double globalFraction, double cashAvailable) {
   updatedCashAvailable); } else { tickCount++;
   }*/
 
-  /*
   updatedCashAvailable = inventoryManager.dynamicStopLoss(
-      price, mode, probabilityIndicator.getProbabilityIndicator(), 0.05, 0.15,
-      sellLog, updatedCashAvailable);*/
+      price, mode, probabilityIndicator.getProbabilityIndicator(), 0.20, 0.25,
+      sellLog, updatedCashAvailable);
 
   return updatedCashAvailable;
 }
