@@ -60,15 +60,6 @@ double Agent::run(Price price, double globalFraction, double cashAvailable) {
       eventDetector.detectProbabilityIndicatorEvent(price.price);
   probabilityIndicator.updateProbabilityIndicator(probabilityIndicatorEvent);
 
-  /*std::fstream fout;
-
-  fout.open("../rez/SOL/3percent/probIndLog.txt",
-            std::ios::out | std::ios::app);
-  fout << price.ticker << "," << price.time << "," << price.price << ","
-       << probabilityIndicator.getProbabilityIndicator() << "\r\n";
-
-  fout.close();*/
-
   if (action == 1) {
     inventoryManager.updateUnitSize(
         probabilityIndicator.getProbabilityIndicator());
@@ -87,31 +78,21 @@ double Agent::run(Price price, double globalFraction, double cashAvailable) {
                                                          updatedCashAvailable);
   }*/
 
-  /*if (inventoryManager.trailingStop(price, mode)) {
+  if (inventoryManager.trailingStop(price, mode)) {
     // printf("trailingStop triggerd\r\n");
     updatedCashAvailable = inventoryManager.sellPosition(price, mode, sellLog,
                                                          updatedCashAvailable);
-  }*/
+  }
 
-  /*if ((tickCount % 1) == 0) {
-    tickCount = 1;
-    updatedCashAvailable = inventoryManager.dynamicPositionReductionLinear(
-        price, mode, 0.15, 0.05, 0.1, sellLog, updatedCashAvailable);
-  } else {
-    tickCount++;
-  }*/
+  /*updatedCashAvailable = inventoryManager.dynamicPositionReductionLinear(
+      price, mode, 0.2, 0.05, 0.10, sellLog, updatedCashAvailable);*/
 
-  /*if ((tickCount % 1000) == 0) {
-    tickCount = 1;
-    updatedCashAvailable =
-  inventoryManager.dynamicPositionReductionExponetial(price, mode, 0.15, 2.5,
-                                                        sellLog, 0.95,
-  updatedCashAvailable); } else { tickCount++;
-  }*/
+  /*updatedCashAvailable = inventoryManager.dynamicPositionReductionExponential(
+      price, mode, 0.25, 2.5, sellLog, 0.80, updatedCashAvailable);*/
 
-  updatedCashAvailable = inventoryManager.dynamicStopLoss(
-      price, mode, probabilityIndicator.getProbabilityIndicator(), 0.20, 0.25,
-      sellLog, updatedCashAvailable);
+  /*updatedCashAvailable = inventoryManager.dynamicStopLoss(
+      price, mode, probabilityIndicator.getProbabilityIndicator(), 0.30, 0.40,
+      sellLog, updatedCashAvailable);*/
 
   return updatedCashAvailable;
 }

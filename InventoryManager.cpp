@@ -25,10 +25,10 @@ void InventoryManager::updateUnitSize(double probabilityIndicator) {
 
 double InventoryManager::buyOrder(Price price, double fraction, int mode,
                                   std::string log, double cashAvailable) {
-  /*if (cashAvailable < (currentUnitSize * fraction)) {
+  if (cashAvailable < (currentUnitSize * fraction)) {
     printf("Not enough cash!!!\r\n");
     return cashAvailable;
-  }*/
+  }
 
   double buyAmount = (currentUnitSize * fraction) / price.price;
   currentInventorySize += buyAmount;
@@ -152,7 +152,7 @@ double InventoryManager::dynamicPositionReductionLinear(
     // sell
     if (mult >= 1) {
       if ((mult * reduction) >= 1) {
-        printf("sell all from loss\r\n");
+        // printf("sell all from loss\r\n");
         return sellPosition(price, mode, log, cashAvailable);
       }
 
@@ -162,13 +162,13 @@ double InventoryManager::dynamicPositionReductionLinear(
           ((currentInventoryCost / currentInventorySize) * sellAmount);
       double profit = (double)mode * sellCost - (double)mode * buyCost;
 
-      printf(
+      /*printf(
           "sell position of size: %f, for %f, for profit %f, "
           "mult %d, price%f, cash left: %f, position "
           "worth: %f\r\n",
           mode * sellAmount, sellCost, profit, mult, price.price,
           cashAvailable + sellCost,
-          (currentInventorySize - sellAmount) * price.price);
+          (currentInventorySize - sellAmount) * price.price);*/
 
       std::fstream fout;
 
@@ -189,7 +189,7 @@ double InventoryManager::dynamicPositionReductionLinear(
   return cashAvailable;
 }
 
-double InventoryManager::dynamicPositionReductionExponetial(
+double InventoryManager::dynamicPositionReductionExponential(
     Price price, int mode, double startLoss, double k, std::string log,
     double cutoff, double cashAvailable) {
   if (unrealizedLoss(price, mode) <= startLoss) {
@@ -199,7 +199,7 @@ double InventoryManager::dynamicPositionReductionExponetial(
     double sellPct = 1.0 - exp(-k * excessLoss);
 
     if (sellPct >= cutoff) {
-      printf("sell all from loss\r\n");
+      // printf("sell all from loss\r\n");
       return sellPosition(price, mode, log, cashAvailable);
     }
 
@@ -208,14 +208,14 @@ double InventoryManager::dynamicPositionReductionExponetial(
     double buyCost =
         ((currentInventoryCost / currentInventorySize) * sellAmount);
     double profit = (double)mode * sellCost - (double)mode * buyCost;
-    printf(
+    /*printf(
         "sell position of size: %f, for %f, for profit %f, price%f, loss%f, "
         "excessLoss%f, currentInventorySize%f, currentInventoryCost%f, cash "
         "left: %f, position worth: %f\r\n",
         mode * sellAmount, sellCost, profit, price.price,
         unrealizedLoss(price, mode), excessLoss, currentInventorySize,
         currentInventoryCost, cashAvailable + sellCost,
-        (currentInventorySize - sellAmount) * price.price);
+        (currentInventorySize - sellAmount) * price.price);*/
 
     std::fstream fout;
 

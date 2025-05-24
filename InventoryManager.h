@@ -36,10 +36,10 @@ class InventoryManager {
                                         double step, double reduction,
                                         std::string log, double cashAvailable);
   // returns updated cashAvailable
-  double dynamicPositionReductionExponetial(Price price, int mode,
-                                            double startLoss, double k,
-                                            std::string log, double cutoff,
-                                            double cashAvailable);
+  double dynamicPositionReductionExponential(Price price, int mode,
+                                             double startLoss, double k,
+                                             std::string log, double cutoff,
+                                             double cashAvailable);
   double dynamicStopLoss(Price price, int mode, double probabilityIndicator,
                          double minLoss, double maxLoss, std::string log,
                          double cashAvailable);
